@@ -1,0 +1,6 @@
+build/
+renders/
+*.dylib
+.DS_Store
+plugin/MDGlitch/skins/
+dist/

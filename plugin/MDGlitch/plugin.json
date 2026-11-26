@@ -1,0 +1,17 @@
+{
+  "name": "MD Glitch",
+  "manufacturer": "Lichthaus",
+  "version": "0.2.4",
+  "format": "vst2",
+  "kind": "effect",
+  "uid": "LhMD",
+  "numInputs": 2,
+  "numOutputs": 2,
+  "category": "Effect",
+  "file32": "VST/md-glitch-arm32.so",
+  "file64": "VST/md-glitch-arm64.so",
+  "description": "A failing portable disc recorder: low-bitrate transform codec, re-encoding generations, shock-buffer skips and digital-link clock slips. Original DSP.",
+  "author": "Lichthaus",
+  "url": "",
+  "license": "MIT"
+}
