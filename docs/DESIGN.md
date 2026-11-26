@@ -271,9 +271,23 @@ Mac bench (`build/t/mdbench 10`, 128-frame blocks, same machine, back to back), 
 | Dying Deck-like, Gens 3 | 0.30 / 0.73 | 0.15 / 0.32-0.33 |
 
 One codec pass went from 7.1 to 3.7 us on the Mac (analysis 2.6 -> 1.3, quantiser 2.0 -> 1.3,
-synthesis 2.5 -> 1.1). The Mac compiler already vectorised some of the old loops; the armv7 build
-vectorised none, so the gain there should be larger. That is not measured yet: the next step is the
-Live II bench of the rebuilt `build/arm32/mdbench`.
+synthesis 2.5 -> 1.1).
+
+Live II bench (same day, `make arm32`, pinned to core 3 of the idle device, 10 s per case, two runs). Before
+it, `test_mdct` and `test_qmf` passed on the A17, so the NEON code gives the plain code's values there too.
+% of a block:
+
+| case | 0.2.4 mean / p99 | now mean / p99 |
+|---|---|---|
+| LP2, Gens 1 | 3.26 / 7.53 | 1.68 / 4.09-4.17 |
+| LP2, Gens 4 | 7.15 / 13.33 | 3.60 / 7.30-7.34 |
+| LP2, Gens 8 | 12.40 / 13.63 | 6.28-6.32 / 7.64-7.65 |
+| SP short, Gens 8 | 14.06 / 15.07 | 6.26 / 7.49-7.82 |
+| LP4 joint, every glitch, Gens 3 | 5.48 / 11.86 | 2.98 / 7.05-7.07 |
+
+About half the cost on the A17, as on the Mac. Gens 8 now costs less (mean 6.3%) than Gens 4 did (7.2%),
+and every case is near half the catalogue's 15% p99 line. Whether Gens 3-8 is now usable in a real
+project is for the owner to try on the device.
 
 Not done: one pass per 128-sample slot on Gen1. It would bring the p99 of Gens 2-4 down to one pass
 for up to 256 more samples of latency. It does not change the mean, and Gens 5-8 would still have
