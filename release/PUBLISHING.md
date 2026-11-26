@@ -11,8 +11,8 @@ for 0.2.5 (summary = `release/catalog-entry.json`).
 
 0.2.5 (2026-11-26): Gen1 CPU work (about half the CPU on the Live II; codec output bit-identical to 0.2.4).
 - **Device test:** the owner played it on the MPC Live II (Gen1, 3.10.1), and the bench and NEON tests ran there
-  (docs/DESIGN.md). The armv7 library in the zip is byte-identical to the tested one. The Key 37 runs 0.2.4; 0.2.5's
-  aarch64 build runs the same NEON code that the Mac tests check bit for bit, but has not been run on the Key 37.
+  (docs/DESIGN.md). The armv7 library in the zip is byte-identical to the tested one. The owner also installed the
+  release build on the MPC Key 37 (Gen2, 3.10.1.12): it loads and sounds right.
 - **Packaging:** `release/release.sh 0.2.5` with the catalogue tools at c4f8b7d; `catalog_check.py --catalog`: 0 warnings
   each.
 

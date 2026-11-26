@@ -1,3 +1,4 @@
 [ {"id": "md-glitch", "version": "0.2.4", "device": "MPC Key 37 (Gen2)", "firmware": "3.10.1.12", "date": "2026-11-26"},
   {"id": "md-glitch", "version": "0.2.4", "device": "MPC Live II", "firmware": "3.10.1", "date": "2026-11-26"},
-  {"id": "md-glitch", "version": "0.2.5", "device": "MPC Live II", "firmware": "3.10.1", "date": "2026-11-26"} ]
+  {"id": "md-glitch", "version": "0.2.5", "device": "MPC Live II", "firmware": "3.10.1", "date": "2026-11-26"},
+  {"id": "md-glitch", "version": "0.2.5", "device": "MPC Key 37 (Gen2)", "firmware": "3.10.1.12", "date": "2026-11-26"} ]
