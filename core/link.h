@@ -11,6 +11,7 @@
 // bits of the 16-bit words. At zero drift the link adds no delay.
 #pragma once
 #include "rng.h"
+#include "simd.h"
 
 #include <algorithm>
 #include <cmath>
@@ -67,7 +68,7 @@ private:
     static constexpr uint32_t kMask = 1023;
     static float to16(float v) {
         v = std::max(-1.0f, std::min(32767.0f / 32768.0f, v));
-        return std::nearbyint(v * 32768.0f) * (1.0f / 32768.0f);
+        return rne(v * 32768.0f) * (1.0f / 32768.0f);  // simd.h: no libm call on armv7
     }
     float flip(float v) {
         const int16_t s = int16_t(std::lrint(v * 32768.0f));

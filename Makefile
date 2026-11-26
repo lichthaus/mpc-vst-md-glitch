@@ -3,8 +3,9 @@
 #   make check    unit and end-to-end tests (MDCT, QMF, engine latency/transparency/CPU)
 #   make qlink    Q-Link matrix test against the built plugin (after plugin/MDGlitch/make.sh)
 #   make renders  test piece + demo renders in renders/ (tools/render-all.sh)
-#   make aarch64  static Key 37 engine bench (Zig from the MPC SDK)
-#   make arm32    static Live II engine bench
+#   make aarch64  static Key 37 engine bench and tests (Zig from the MPC SDK)
+#   make arm32    static Live II engine bench and tests (test_mdct and test_qmf check on the device
+#                 that the NEON code gives the plain code's values)
 CXX      ?= c++
 CXXFLAGS := -std=c++17 -O2 -Wall -Wextra
 HDRS     := $(wildcard core/*.h) tools/wavio.h
@@ -33,9 +34,9 @@ qlink: build/t/qlinktest
 renders: all
 	tools/render-all.sh
 
-aarch64: build/aarch64/test_engine build/aarch64/mdbench
+aarch64: build/aarch64/test_engine build/aarch64/mdbench build/aarch64/test_mdct build/aarch64/test_qmf
 
-arm32: build/arm32/test_engine build/arm32/mdbench
+arm32: build/arm32/test_engine build/arm32/mdbench build/arm32/test_mdct build/arm32/test_qmf
 
 build/aarch64/mdbench: tools/mdbench.cpp $(HDRS)
 	@mkdir -p build/aarch64
@@ -45,11 +46,11 @@ build/arm32/mdbench: tools/mdbench.cpp $(HDRS)
 	@mkdir -p build/arm32
 	$(ZIG) c++ -target arm-linux-musleabihf -mcpu=cortex_a17 -mfpu=neon-vfpv4 $(CXXFLAGS) -static $< -o $@
 
-build/arm32/test_engine: tests/test_engine.cpp $(HDRS)
+build/arm32/test_%: tests/test_%.cpp $(HDRS)
 	@mkdir -p build/arm32
-	$(ZIG) c++ -target arm-linux-musleabihf -mcpu=cortex_a17 $(CXXFLAGS) -static $< -o $@
+	$(ZIG) c++ -target arm-linux-musleabihf -mcpu=cortex_a17 -mfpu=neon-vfpv4 $(CXXFLAGS) -static $< -o $@
 
-build/aarch64/test_engine: tests/test_engine.cpp $(HDRS)
+build/aarch64/test_%: tests/test_%.cpp $(HDRS)
 	@mkdir -p build/aarch64
 	$(ZIG) c++ -target aarch64-linux-musl -mcpu=cortex_a76 $(CXXFLAGS) -static $< -o $@
 

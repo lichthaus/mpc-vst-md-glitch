@@ -208,3 +208,73 @@ stereo noise per case in 128-frame blocks. % of a block (the catalogue's line: p
 
 On a Live II in a real project, Gens above 2 can still be too heavy (owner's report, 2026-11-26): the bench
 is one plugin alone on an idle core. Work on the Gen1 cost continues.
+
+### Gen1 CPU work (after 0.2.4, 2026-11-26, not released yet)
+
+Goal: make Gens 3-8 usable on the Live II. Gens 2, 3 and 4 have the same p99 there (two passes in
+the heaviest slot), yet the owner finds Gens 3 too heavy in a project and Gens 2 fine. So what matters
+is the total load (the mean), not only the heaviest 128-sample slot. The fix has to make a pass
+cheaper; spreading passes differently cannot do that.
+
+On armv7 the compiler does not vectorise float loops, because NEON flushes subnormals. So the 0.2.4 Gen1
+build ran every loop one float at a time. Each quantised coefficient also called `nearbyintf`, which
+on armv7 is a library call that reads and clears the FPSCR around a software `rintf` (1024 calls per
+pass). What changed:
+
+- **Quantiser** (`codec.h`, `simd.h`): rounding is `rne()` (add and subtract 1.5 x 2^23, keep the sign)
+  instead of `nearbyint`, and a unit is quantised four lanes at a time. The offset bisection counts
+  bits four units at a time in integers (exact: the float sum only ever held whole numbers). The
+  greedy fill keeps each unit's cost and NMR and updates only the chosen unit. Scale-factor steps come
+  from a table, and the scale factor itself comes from the peak's exponent and mantissa. Within 1e-4
+  of a step it falls back to `ceil(3 log2 p)`.
+- **FFT and MDCT** (`mdct.h`): the bit reversal is a swap list and every stage has its own contiguous
+  twiddles. Stages 2 and 4 run together as one NEON pass, and the stages from 8 up, the folds and both
+  twiddle passes are NEON too.
+- **Pass input and output** (`codec.h`): each window is copied out of its ring once, and the transient
+  detector reads it with the four quarters as four lanes. Windowing and overlap-add work on
+  contiguous pieces instead of masked 64-bit ring indices per sample, and decoded samples go to the
+  next pass in blocks (`Pass::forwardTo`).
+- **QMF** (`qmf.h`, `engine.h`): the engine handles up to 256 samples at a time. It runs the link and the
+  input staging first, then the analysis filters over every whole group, then the groups one by one
+  (passes, fixed-delay read), then the synthesis filters, then the output samples. `QuadFir` computes
+  four filter branches (even/odd, left/right) as lanes and four output rows at once. This hides the
+  multiply-add latency of 16-tap chains that were summed one after another before.
+- **Link**: the 16-bit word rounding uses `rne()` too.
+
+**Same output.** Every NEON kernel does the same IEEE operations in the same order as the scalar code.
+That includes the fused multiply-adds clang forms for it (`-ffp-contract=on`, checked in the Mac and
+armv7 disassembly). Each lane keeps its own summation order. Checks on the Mac:
+- all 24 `tools/mdrender` renders (the 17 demo settings and Gens 2-8 variants) are byte-identical
+  before and after;
+- a float-exact hash of the engine output matches for 32 settings (Gens 1-8 x four mixes) and for
+  five scripted runs with odd block sizes (1 to 4096 frames) and Gens/Stereo switches mid-block,
+  which test the fade-switch chunking. It matches with NEON and with the plain C++ fallback
+  (`-DMD_NO_NEON`);
+- `tests/test_mdct` compares the fast FFT/MDCT with a copy of the 0.2.4 code value for value. It
+  also checks `rne()` against `nearbyint` and the scale factor against the formula on a sweep of
+  floats. A separate run checked every float: every |x| <= 2^22 of both signs for `rne()`, and
+  every positive finite float for the scale factor, with no mismatch. `tests/test_qmf` checks `QuadFir`
+  against the mono filters for block lengths 1-160.
+
+The only difference possible on the Live II is that armv7 NEON flushes subnormals (below
+1.2e-38, about -758 dBFS) to zero. `make arm32` also builds `test_mdct` and `test_qmf`, so this can
+be checked on the device. Latency is unchanged.
+
+Mac bench (`build/t/mdbench 10`, 128-frame blocks, same machine, back to back), % of a block:
+
+| case | 0.2.4 mean / p99 | now mean / p99 |
+|---|---|---|
+| LP2, Gens 1 | 0.18-0.26 / 0.42-0.61 | 0.09-0.11 / 0.19-0.27 |
+| LP2, Gens 4 | 0.38-0.42 / 0.78-0.82 | 0.18-0.20 / 0.34-0.39 |
+| LP2, Gens 8 | 0.63 / 0.80 | 0.30-0.31 / 0.35-0.39 |
+| SP short, Gens 8 | 0.63 / 0.81 | 0.33-0.34 / 0.40-0.43 |
+| Dying Deck-like, Gens 3 | 0.30 / 0.73 | 0.15 / 0.32-0.33 |
+
+One codec pass went from 7.1 to 3.7 us on the Mac (analysis 2.6 -> 1.3, quantiser 2.0 -> 1.3,
+synthesis 2.5 -> 1.1). The Mac compiler already vectorised some of the old loops; the armv7 build
+vectorised none, so the gain there should be larger. That is not measured yet: the next step is the
+Live II bench of the rebuilt `build/arm32/mdbench`.
+
+Not done: one pass per 128-sample slot on Gen1. It would bring the p99 of Gens 2-4 down to one pass
+for up to 256 more samples of latency. It does not change the mean, and Gens 5-8 would still have
+two passes in a slot. It only makes sense if the device bench shows the per-slot peak matters.
