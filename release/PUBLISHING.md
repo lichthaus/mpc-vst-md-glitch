@@ -6,8 +6,8 @@ and attach both zips to the release. The catalogue picks up new releases with no
 
 Status 2026-11-26: 0.2.5 released (pre-release), https://github.com/lichthaus/mpc-vst-md-glitch/releases/tag/v0.2.5
 (asset SHA-256 armv7 edd67139..., aarch64 3e1f51bd...). Catalogue PR
-https://github.com/open-mpc/mpc-vst-plugins/pull/1219 is still waiting for review; its summary still has the 0.2.4 Gen1
-advice (`release/catalog-entry.json` has the new text).
+https://github.com/open-mpc/mpc-vst-plugins/pull/1219 is still waiting for review; its entry and description were updated
+for 0.2.5 (summary = `release/catalog-entry.json`).
 
 0.2.5 (2026-11-26): Gen1 CPU work (about half the CPU on the Live II; codec output bit-identical to 0.2.4).
 - **Device test:** the owner played it on the MPC Live II (Gen1, 3.10.1), and the bench and NEON tests ran there
