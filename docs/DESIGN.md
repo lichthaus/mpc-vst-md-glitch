@@ -209,7 +209,7 @@ stereo noise per case in 128-frame blocks. % of a block (the catalogue's line: p
 On a Live II in a real project, Gens above 2 can still be too heavy (owner's report, 2026-11-26): the bench
 is one plugin alone on an idle core. Work on the Gen1 cost continues.
 
-### Gen1 CPU work (after 0.2.4, 2026-11-26, not released yet)
+### Gen1 CPU work (0.2.5, 2026-11-26)
 
 Goal: make Gens 3-8 usable on the Live II. Gens 2, 3 and 4 have the same p99 there (two passes in
 the heaviest slot), yet the owner finds Gens 3 too heavy in a project and Gens 2 fine. So what matters

@@ -18,10 +18,11 @@ VST2 built with Akai's MPC Plugin Builder SDK, for Gen1 (armv7) and Gen2 (aarch6
 code written for this plugin (see [docs/DESIGN.md](docs/DESIGN.md)); there is no third-party code, ROM or
 sample data. MIT licence.
 
-**Status: 0.2.4, pre-release.**
-- Tested on an MPC Key 37 (Gen2, MPC OS 3.10.1.12) and an MPC Live II (Gen1).
-- On the Live II, the next version takes about half the CPU of 0.2.4, so every Gens setting is usable. Gens
-  6-8 add enough latency to be felt when playing live (see below).
+**Status: 0.2.5, pre-release.**
+- Tested on an MPC Live II (Gen1, 0.2.5) and an MPC Key 37 (Gen2, MPC OS 3.10.1.12, 0.2.4; 0.2.5 changes only
+  CPU use, with the same output).
+- On the Live II, 0.2.5 takes about half the CPU of 0.2.4, so every Gens setting is usable. Gens 6-8 add
+  enough latency to be felt when playing live (see below).
 
 ## Pages
 
@@ -84,8 +85,8 @@ Device benches (one plugin alone, one core), as % of a 128-frame block in the he
 | Gens 1 | 1.7% | 4.1% |
 | Gens 8 | 3.0% | 7.6% |
 
-Key 37 figures are from 0.2.4, and Live II figures from the faster Gen1 code (0.2.5 test build); 0.2.4 had
-7.5% and 13.6% on the Live II.
+Key 37 figures are from 0.2.4. Live II figures are from 0.2.5, the faster Gen1 code (0.2.4 had 7.5% and
+13.6% there). The codec's output is bit-identical between the two versions.
 
 Details are in [docs/DESIGN.md](docs/DESIGN.md).
 
