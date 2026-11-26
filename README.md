@@ -20,8 +20,8 @@ sample data. MIT licence.
 
 **Status: 0.2.4, pre-release.**
 - Tested on an MPC Key 37 (Gen2, MPC OS 3.10.1.12) and an MPC Live II (Gen1).
-- On the Live II, Gens above 2 can be too heavy in a project, so keep Gens at 1-2 there. Work on that
-  continues.
+- On the Live II, the next version takes about half the CPU of 0.2.4, so every Gens setting is usable. Gens
+  6-8 add enough latency to be felt when playing live (see below).
 
 ## Pages
 
@@ -73,12 +73,19 @@ keep CPU peaks down, which adds 128 samples at Gens 3-4, 256 at 5-6 and 384 at 7
 samples (45.7 ms). The dry path is delayed by the same amount, so Mix never combs. Changing Gens or Stereo
 restarts the codec behind a short fade.
 
+The MPC reads a plugin's latency once, when it loads it, so only the Gens 1 figure is compensated. Gens 6-8
+(37-46 ms) are best on playback tracks and for resampling. Played live through the insert, they feel a
+little late.
+
 Device benches (one plugin alone, one core), as % of a 128-frame block in the heaviest blocks (p99):
 
 | Setting | Key 37 (A76 core) | Live II (A17 core) |
 |---|---|---|
-| Gens 1 | 1.7% | 7.5% |
-| Gens 8 | 3.0% | 13.6% |
+| Gens 1 | 1.7% | 4.1% |
+| Gens 8 | 3.0% | 7.6% |
+
+Key 37 figures are from 0.2.4, and Live II figures from the faster Gen1 code (0.2.5 test build); 0.2.4 had
+7.5% and 13.6% on the Live II.
 
 Details are in [docs/DESIGN.md](docs/DESIGN.md).
 
