@@ -74,7 +74,7 @@ public:
         i.name = "MD Glitch";
         i.vendor = "Lichthaus";
         i.uniqueId = MPC_FOURCC('L', 'h', 'M', 'D');
-        i.version = 204;  // 0.2.4
+        i.version = 205;  // 0.2.5
         i.isInstrument = false;
         i.numInputs = 2;
         i.numOutputs = 2;
