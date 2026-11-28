@@ -4,7 +4,7 @@ For a new version: bump `plugin/MDGlitch/plugin.json` (and `info().version` in `
 `OPENMPC=... release/release.sh X.Y.Z`, test on a device, add the result to `tested.json`, tag `vX.Y.Z`,
 and attach both zips to the release. The catalogue picks up new releases with no new PR.
 
-Status 2026-11-27: 0.2.5 is to become the first stable release: the same tag and zips, with the GitHub pre-release flag
+Status 2026-11-27: 0.2.5 is the first stable release (done 2026-11-27): the same tag and zips, with the GitHub pre-release flag
 removed (`gh release edit v0.2.5 --prerelease=false --latest`), so the catalogue offers it outside the beta channel.
 Owner, 2026-11-27: "ready for release". Catalogue PR https://github.com/open-mpc/mpc-vst-plugins/pull/1219 merged
 2026-11-27 (by sd88me, with the 0.2.5 entry), so no new PR is needed.
