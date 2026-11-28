@@ -4,10 +4,10 @@ For a new version: bump `plugin/MDGlitch/plugin.json` (and `info().version` in `
 `OPENMPC=... release/release.sh X.Y.Z`, test on a device, add the result to `tested.json`, tag `vX.Y.Z`,
 and attach both zips to the release. The catalogue picks up new releases with no new PR.
 
-Status 2026-11-26: 0.2.5 released (pre-release), https://github.com/lichthaus/mpc-vst-md-glitch/releases/tag/v0.2.5
-(asset SHA-256 armv7 edd67139..., aarch64 3e1f51bd...). Catalogue PR
-https://github.com/open-mpc/mpc-vst-plugins/pull/1219 is still waiting for review; its entry and description were updated
-for 0.2.5 (summary = `release/catalog-entry.json`).
+Status 2026-11-27: 0.2.5 is to become the first stable release: the same tag and zips, with the GitHub pre-release flag
+removed (`gh release edit v0.2.5 --prerelease=false --latest`), so the catalogue offers it outside the beta channel.
+Owner, 2026-11-27: "ready for release". Catalogue PR https://github.com/open-mpc/mpc-vst-plugins/pull/1219 merged
+2026-11-27 (by sd88me, with the 0.2.5 entry), so no new PR is needed.
 
 0.2.5 (2026-11-26): Gen1 CPU work (about half the CPU on the Live II; codec output bit-identical to 0.2.4).
 - **Device test:** the owner played it on the MPC Live II (Gen1, 3.10.1), and the bench and NEON tests ran there
